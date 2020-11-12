@@ -23,3 +23,10 @@ class Handler:
         newPacket.serverGuid = GeneralVariables.options["guid"]
         newPacket.serverName = GeneralVariables.options["name"]
         return newPacket
+    
+    def handle(self, data):
+        id = data[0]
+        if id == GeneralVariables.ids["UnconnectedPing"]:
+            pass
+        elif id == GeneralVariables.ids["UnconnectedPingOpenConnections"]:
+            pass
