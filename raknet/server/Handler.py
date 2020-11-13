@@ -24,7 +24,7 @@ class Handler:
         newPacket.serverName = GeneralVariables.options["name"]
         return newPacket
     
-    def handle(self, data):
+    def handle(self, data, address):
         id = data[0]
         if id == GeneralVariables.ids["UnconnectedPing"]:
             newPacket = handleUnconnectedPing(data)
