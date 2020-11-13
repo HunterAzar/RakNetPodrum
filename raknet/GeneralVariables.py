@@ -24,3 +24,4 @@ class GeneralVariables:
         "nack": 0xa0,
         "ack": 0xc0
     }
+    server = None
