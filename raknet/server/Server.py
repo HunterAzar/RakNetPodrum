@@ -1,5 +1,6 @@
 import socket
 from ..GeneralVariables import GeneralVariables
+from .server.Handler import Handler
 
 class Server:
     socket = None
@@ -20,4 +21,10 @@ class Server:
         
     def sendPacket(self, packet, ip, port):
         packet.encode()
-        self.socket.sendto(packet.buffer, (ip, port)
+        self.socket.sendto(packet.buffer, (ip, port))
+
+    def run(self):
+        while True:
+            recv = socket.recvfrom(65535)
+            if recv:
+                Handler.handle(recv[0], recv[1])
