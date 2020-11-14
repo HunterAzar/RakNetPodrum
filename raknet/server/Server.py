@@ -35,4 +35,4 @@ class Server(Thread):
         while True:
             recv = self.socket.recvfrom(65535)
             if recv:
-                Handler.handle(recv[0], recv[1])
+                Handler().handle(recv[0], recv[1])
