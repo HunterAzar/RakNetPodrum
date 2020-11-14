@@ -26,9 +26,9 @@ class Handler:
     
     def handle(self, data, address):
         id = data[0]
-        if id == GeneralVariables.ids["UnconnectedPing"]:
+        if id == GeneralVariables.packetIds["UnconnectedPing"]:
             newPacket = handleUnconnectedPing(data)
             GeneralVariables.server.sendPacket(newPacket)
-        elif id == GeneralVariables.ids["UnconnectedPingOpenConnections"]:
+        elif id == GeneralVariables.packetIds["UnconnectedPingOpenConnections"]:
             newPacket = handleUnconnectedPingOpenConnections(data)
             GeneralVariables.server.sendPacket(newPacket)
