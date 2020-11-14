@@ -5,10 +5,10 @@ class UnconnectedPing(OfflinePacket):
     id = GeneralVariables.packetIds["UnconnectedPing"]
     time = None
     
-    def decodePayload(self):
+    def encodePayload(self):
         self.putLong(self.time)
         self.putMagic()
         
-    def encodePayload(self):
+    def decodePayload(self):
         self.time = self.getLong()
         self.magic = self.getMagic()
