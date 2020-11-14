@@ -7,13 +7,13 @@ class UnconnectedPong(OfflinePacket):
     serverGuid = None
     serverName = None
     
-    def decodePayload(self):
+    def encodePayload(self):
         self.putLong(self.time)
         self.putLong(self.serverGuid)
         self.putMagic()
         self.putString(self.serverName)
         
-    def encodePayload(self):
+    def decodePayload(self):
         self.time = self.getLong()
         self.serverGuid = self.getLong()
         self.magic = self.getMagic()
