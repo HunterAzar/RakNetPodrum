@@ -20,11 +20,16 @@ class Server(Thread):
         else:
             self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-            self.start()
+            
+    def setOption(self, name, value):
+        GeneralVariables.options[name] = value
         
     def sendPacket(self, packet, ip, port):
         packet.encode()
         self.socket.sendto(packet.buffer, (ip, port))
+        
+    def startServer(self):
+        self.start()
 
     def run(self):
         while True:
