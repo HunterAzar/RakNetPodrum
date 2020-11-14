@@ -1,7 +1,7 @@
 from ..GeneralVariables import GeneralVariables
-from ..packets.UnconnectedPing import UnconnectedPing
-from ..packets.UnconnectedPingOpenConnections import UnconnectedPingOpenConnections
-from ..packets.UnconnectedPong import UnconnectedPong
+from ..protocol.UnconnectedPing import UnconnectedPing
+from ..protocol.UnconnectedPingOpenConnections import UnconnectedPingOpenConnections
+from ..protocol.UnconnectedPong import UnconnectedPong
 
 class Handler:
     def handleUnconnectedPing(self, data):
