@@ -26,6 +26,7 @@ class Server(Thread):
         
     def sendPacket(self, packet, ip, port):
         packet.encode()
+        print(packet.buffer)
         self.socket.sendto(packet.buffer, (ip, port))
         
     def startServer(self):
