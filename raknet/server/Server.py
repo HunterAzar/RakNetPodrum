@@ -1,7 +1,7 @@
 import socket
 from threading import Thread
 from ..GeneralVariables import GeneralVariables
-from .server.Handler import Handler
+from .Handler import Handler
 
 class Server(Thread):
     socket = None
