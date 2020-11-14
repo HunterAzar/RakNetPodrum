@@ -9,7 +9,7 @@ class Server(Thread):
     def __init__(self, address, interface):
         super().__init__()
         GeneralVariables.server = self
-        self.socket = socket.socket(socket.AF_INET if address.version == 4 else socket.AF_INET6, socket.SOCK_DGRAM socket.IPPROTO_UDP)
+        self.socket = socket.socket(socket.AF_INET if address.version == 4 else socket.AF_INET6, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
         if address.version == 6:
             self.socket.setsockopt(socket.IPPROTO_IPV6, socket.IPV6_V6ONLY, 1)
         try:
