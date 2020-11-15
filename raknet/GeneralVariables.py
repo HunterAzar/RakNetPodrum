@@ -5,7 +5,8 @@ class GeneralVariables:
     options = {
         "name": "",
         "guid": int.from_bytes(os.urandom(8), "little"),
-        "systemAddressesCount": 20
+        "systemAddressesCount": 20,
+        "acceptedProtocolVersions": [5, 6, 7, 8, 9, 10]
     }
     packetIds = {
         "ConnectedPing": 0x00,
