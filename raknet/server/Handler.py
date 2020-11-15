@@ -1,4 +1,5 @@
 from ..GeneralVariables import GeneralVariables
+from ..protocol.IncompatibleProtocol import IncompatibleProtocol
 from ..protocol.OpenConnectionReply1 import OpenConnectionReply1
 from ..protocol.OpenConnectionReply2 import OpenConnectionReply2
 from ..protocol.OpenConnectionRequest1 import OpenConnectionRequest1
@@ -31,6 +32,10 @@ class Handler:
     def handleOpenConnectionRequest1(self, data):
         packet = OpenConnectionRequest1()
         packet.decode()
+        if not packet.protocolVersion in GeneralVariables.options["acceptedProtocolVersions"]:
+             newPacket = IncompatibleProtocol()
+             newPacket.serverGuid = GeneralVariables.options["guid"]
+             return newPacket
         newPacket = OpenConnectionReply1()
         newPacket.serverGuid = GeneralVariables.options["guid"]
         newPacket.useSecurity = 0
