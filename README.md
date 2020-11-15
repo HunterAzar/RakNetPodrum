@@ -1,2 +1,2 @@
 # RakNetPodrum
-the reknet library for podrum
+the raknet library for podrum
