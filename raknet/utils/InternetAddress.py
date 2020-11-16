@@ -3,7 +3,7 @@ class InternetAddress:
     port = None
     version = None
 
-    def __init__(self, ip, port=19132, version=4):
+    def __init__(self, ip, port = 19132, version = 4):
         self.ip = ip
         self.port = port
         self.version = version
