@@ -32,6 +32,7 @@ class Handler:
     
     def handleOpenConnectionRequest1(self, data):
         packet = OpenConnectionRequest1()
+        packet.buffer = data
         packet.decode()
         if not packet.protocolVersion in GeneralVariables.options["acceptedProtocolVersions"]:
              newPacket = IncompatibleProtocol()
@@ -46,6 +47,7 @@ class Handler:
     
     def handleOpenConnectionRequest2(self, data, address):
         packet = OpenConnectionRequest2()
+        packet.buffer = data
         packet.decode()
         newPacket = OpenConnectionReply2()
         newPacket.serverGuid = GeneralVariables.options["guid"]
