@@ -3,7 +3,7 @@ class InternetAddress:
     port = None
     version = None
 
-    def __init__(self, ip, port, version = 4):
+    def __init__(self, ip, port=19132, version=4):
         self.ip = ip
         self.port = port
         self.version = version
@@ -18,4 +18,4 @@ class InternetAddress:
         return self.version
 
     def toString(self):
-        return str(self.address) + ":" + str(self.port)
+        return f"{self.ip}:{self.port}"
