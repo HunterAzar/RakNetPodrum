@@ -24,6 +24,10 @@ class Server(Thread):
             
     def addressToToken(address):
         return str(address.ip) + ":" + str(address.port)
+    
+    def addConnection(address, mtuSize):
+        token = self.addressToToken(address)
+        pass # Todo | self.connections[token] = Connection(address, mtuSize)
             
     def setOption(self, name, value):
         GeneralVariables.options[name] = value
