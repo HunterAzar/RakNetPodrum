@@ -34,7 +34,8 @@ class Handler:
         packet = OpenConnectionRequest1()
         packet.buffer = data
         packet.decode()
-        if not packet.protocolVersion in GeneralVariables.options["acceptedProtocolVersions"]:
+        print(f"Your protocol version is {str(packet.protocolVersion)}.")
+        if packet.protocolVersion not in GeneralVariables.options["acceptedProtocolVersions"]:
              newPacket = IncompatibleProtocol()
              newPacket.protocolVersion = packet.protocolVersion
              newPacket.serverGuid = GeneralVariables.options["guid"]
