@@ -19,10 +19,23 @@ class GeneralVariables:
         "OpenConnectionRequest2": 0x07,
         "OpenConnectionResponse2": 0x08,
         "ConnectionRequest": 0x09,
-        "ConnectionResponse": 0x10,
+        "ConnectionRequestAccepted": 0x10,
         "NewConnection": 0x13,
         "IncompatibleProtocol": 0x19,
-        "nack": 0xa0,
-        "ack": 0xc0
+        "Nack": 0xa0,
+        "Ack": 0xc0
+    }
+    
+    packetNames = {
+        0x01: "Unconnected Ping",
+        0x1c: "Unconnected Pong",
+        0x02: "Unconnected Ping Open Connections",
+        0x05: "Open Connection Request 1",
+        0x06: "Open Connection Response 1",
+        0x07: "Open Connection Request 2",
+        0x08: "Open Connection Response 2",
+        0x19: "Incompatible Protocol",
+        0xa0: "Nack",
+        0xc0: "Ack"
     }
     server = None
