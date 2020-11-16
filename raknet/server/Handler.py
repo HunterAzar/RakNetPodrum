@@ -34,6 +34,7 @@ class Handler:
         packet.decode()
         if not packet.protocolVersion in GeneralVariables.options["acceptedProtocolVersions"]:
              newPacket = IncompatibleProtocol()
+             newPacket.protocolVersion = packet.protocolVersion
              newPacket.serverGuid = GeneralVariables.options["guid"]
              return newPacket
         newPacket = OpenConnectionReply1()
