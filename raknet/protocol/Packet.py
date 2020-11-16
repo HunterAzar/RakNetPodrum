@@ -1,4 +1,5 @@
 from binutilspy.BinaryStream import BinaryStream
+import socket
 from ..utils.InternetAddress import InternetAddress
 
 class Packet(BinaryStream):
@@ -35,14 +36,22 @@ class Packet(BinaryStream):
 
     def getAddress(self):
         version = self.getByte()
-        ip = ".".join([
-            str((~self.getByte()) & 0xff),
-            str((~self.getByte()) & 0xff),
-            str((~self.getByte()) & 0xff),
-            str((~self.getByte()) & 0xff)
-        ])
-        port = self.getShort()
-        return InternetAddress(ip, port, version)
+        if version == 4:
+            ip = ".".join([
+                str((~self.getByte()) & 0xff),
+                str((~self.getByte()) & 0xff),
+                str((~self.getByte()) & 0xff),
+                str((~self.getByte()) & 0xff)
+            ])
+            port = self.getShort()
+            return InternetAddress(ip, port, version)
+        elif version == 6:
+            self.getLShort()
+            port = self.getShort()
+            self.getInt()
+            ip = socket.inet_ntop(socket.AF_INET6, self.get(16))
+            self.getInt()
+            return InternetAddress(ip, port, version)
 
     def putAddress(self, address):
         self.putByte(address.getVersion())
