@@ -36,10 +36,10 @@ class Packet(BinaryStream):
     def getAddress(self):
         version = self.getByte()
         ip = ".".join([
-            str(-1 * (self.getByte() + 1) + 256),
-            str(-1 * (self.getByte() + 1) + 256),
-            str(-1 * (self.getByte() + 1) + 256),
-            str(-1 * (self.getByte() + 1) + 256)
+            str((~self.getByte()) & 0xff),
+            str((~self.getByte()) & 0xff),
+            str((~self.getByte()) & 0xff),
+            str((~self.getByte()) & 0xff)
         ])
         port = self.getShort()
         return InternetAddress(ip, port, version)
@@ -48,5 +48,5 @@ class Packet(BinaryStream):
         self.putByte(address.getVersion())
         parts = address.getIp().split(".")
         for i in range(0, 4):
-            self.putByte(abs(int(parts[i]) -1) - 256)
+            self.putByte((~(int(part[i]))) & 0xff)
         self.putShort(address.getPort())
