@@ -47,6 +47,6 @@ class Packet(BinaryStream):
     def putAddress(self, address):
         self.putByte(address.getVersion())
         parts = address.getIp().split(".")
-        for i in range(0, 4):
-            self.putByte((~(int(part[i]))) & 0xff)
+        for part in parts:
+            self.putByte((~(int(part))) & 0xff)
         self.putShort(address.getPort())
