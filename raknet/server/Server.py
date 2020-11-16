@@ -48,7 +48,7 @@ class Server(Thread):
         
     def sendPacket(self, packet, ip, port):
         packet.encode()
-        print(packet.buffer)
+        print(GeneralVariables.packetNames[packet.buffer[0]])
         self.socket.sendto(packet.buffer, (ip, port))
         
     def startServer(self):
