@@ -26,7 +26,6 @@ class GeneralVariables:
         "Nack": 0xa0,
         "Ack": 0xc0
     }
-    
     packetNames = {
         0x01: "Unconnected Ping",
         0x1c: "Unconnected Pong",
@@ -52,5 +51,31 @@ class GeneralVariables:
         0x8b: "Custom Packet",
         0x8c: "Custom Packet",
         0x8d: "Custom Packet"
+    }
+    reliability = {
+        "Unreliable": 0,
+        "UnreliableSequenced": 1,
+        "Reliable": 2,
+        "ReliableOrdered": 3,
+        "ReliableSequenced": 4,
+        "UnreliableWithAckReceipt)": 5,
+        "ReliableWithAckReceipt": 6,
+        "ReliableOrderedWithAckReceipt": 7
+    }
+    bitFlags = {
+        "Valid": 0x80,
+        "Ack": 0x40,
+        "Nack": 0x20,
+        "Split": 0x10
+    }
+    connectionStates = {
+        "Connecting": 0,
+        "Connected": 1,
+        "Disconnecting": 2,
+        "Disconnected": 3
+    }
+    packetPriorities = {
+        "Normal": 0,
+        "Immediate": 1
     }
     server = None
