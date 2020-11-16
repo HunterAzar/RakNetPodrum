@@ -22,12 +22,26 @@ class Server(Thread):
             self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
             
-    def addressToToken(address):
+    def addressToToken(self, address):
         return str(address.ip) + ":" + str(address.port)
     
-    def addConnection(address, mtuSize):
+    def addConnection(self, address, mtuSize):
         token = self.addressToToken(address)
         pass # Todo | self.connections[token] = Connection(address, mtuSize)
+    
+    def removeConnection(self, address):
+        token = self.addressToToken(address)
+        if token in self.connections:
+            connection = self.connections[token]
+            # Todo | connection.close()
+            del connection
+            
+    def getConnection(self, address):
+        token = self.addressToToken(address)
+        if token in self.connections:
+            return self.connections[token]
+        else:
+            return None
             
     def setOption(self, name, value):
         GeneralVariables.options[name] = value
