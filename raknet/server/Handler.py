@@ -57,7 +57,7 @@ class Handler:
     
     def handle(self, data, address):
         id = data[0]
-        print(GeneralVariables.packetName[id])
+        print(GeneralVariables.packetNames[id])
         if id == GeneralVariables.packetIds["UnconnectedPing"]:
             newPacket = self.handleUnconnectedPing(data)
             GeneralVariables.server.sendPacket(newPacket, address[0], address[1])
