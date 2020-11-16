@@ -7,6 +7,7 @@ from ..protocol.OpenConnectionRequest2 import OpenConnectionRequest2
 from ..protocol.UnconnectedPing import UnconnectedPing
 from ..protocol.UnconnectedPingOpenConnections import UnconnectedPingOpenConnections
 from ..protocol.UnconnectedPong import UnconnectedPong
+from ..utils.InternetAddress import InternetAddress
 
 class Handler:
     def handleUnconnectedPing(self, data):
@@ -51,6 +52,7 @@ class Handler:
         newPacket.clientAddress = address
         newPacket.mtuSize = packet.mtuSize
         newPacket.useSecurity = 0
+        GeneralVariables.server.addConnection(address, packet.mtuSize)
         return newPacket
     
     def handle(self, data, address):
@@ -63,4 +65,7 @@ class Handler:
             GeneralVariables.server.sendPacket(newPacket, address[0], address[1])
         elif id == GeneralVariables.packetIds["OpenConnectionRequest1"]:
             newPacket = self.handleOpenConnectionRequest1(data)
+            GeneralVariables.server.sendPacket(newPacket, address[0], address[1])
+        elif id == GeneralVariables.packetIds["OpenConnectionRequest2"]:
+            newPacket = self.handleOpenConnectionRequest2(data, InternetAddress(address[0], address[1], 4))
             GeneralVariables.server.sendPacket(newPacket, address[0], address[1])
