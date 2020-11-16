@@ -54,8 +54,18 @@ class Packet(BinaryStream):
             return InternetAddress(ip, port, version)
 
     def putAddress(self, address):
-        self.putByte(address.getVersion())
-        parts = address.getIp().split(".")
-        for part in parts:
-            self.putByte((~(int(part))) & 0xff)
-        self.putShort(address.getPort())
+        version = address.getVersion()
+        ip = address.getIp()
+        port = address.getPort()
+        self.putByte(version)
+        if version == 4:
+            parts = ip.split(".")
+            for part in parts:
+                self.putByte((~(int(part))) & 0xff)
+            self.putShort(port)
+        elif version == 6:
+            self.putLShort(socket.AF_INET6)
+            self.putShort(port)
+            self.putInt(0)
+            self.put(socket.inet_pton(socket.AF_INET6, ip))
+            self.putInt(0)
