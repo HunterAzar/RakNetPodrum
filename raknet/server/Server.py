@@ -5,6 +5,7 @@ from .Handler import Handler
 
 class Server(Thread):
     socket = None
+    connections = {}
     
     def __init__(self, address, interface = None):
         super().__init__()
@@ -20,6 +21,9 @@ class Server(Thread):
         else:
             self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+            
+    def addressToToken(address):
+        return str(address.ip) + ":" + str(address.port)
             
     def setOption(self, name, value):
         GeneralVariables.options[name] = value
