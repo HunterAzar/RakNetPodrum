@@ -36,6 +36,20 @@ class GeneralVariables:
         0x08: "Open Connection Response 2",
         0x19: "Incompatible Protocol",
         0xa0: "Nack",
-        0xc0: "Ack"
+        0xc0: "Ack",
+        0x80: "Custom Packet",
+        0x81: "Custom Packet",
+        0x82: "Custom Packet",
+        0x83: "Custom Packet",
+        0x84: "Custom Packet",
+        0x85: "Custom Packet",
+        0x86: "Custom Packet",
+        0x87: "Custom Packet",
+        0x88: "Custom Packet",
+        0x89: "Custom Packet",
+        0x8a: "Custom Packet",
+        0x8b: "Custom Packet",
+        0x8c: "Custom Packet",
+        0x8d: "Custom Packet"
     }
     server = None
