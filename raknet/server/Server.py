@@ -1,5 +1,6 @@
 import socket
 from threading import Thread
+from .Connection import Connection
 from ..GeneralVariables import GeneralVariables
 from .Handler import Handler
 
@@ -27,13 +28,13 @@ class Server(Thread):
     
     def addConnection(self, address, mtuSize):
         token = self.addressToToken(address)
-        pass # Todo | self.connections[token] = Connection(address, mtuSize)
+        self.connections[token] = Connection(address, mtuSize)
     
     def removeConnection(self, address):
         token = self.addressToToken(address)
         if token in self.connections:
             connection = self.connections[token]
-            # Todo | connection.close()
+            connection.close()
             del connection
             
     def getConnection(self, address):
