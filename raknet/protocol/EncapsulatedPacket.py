@@ -1,7 +1,7 @@
 from .Packet import Packet
 from ..GeneralVariables import GeneralVariables
 
-class EncapsulatedPacket(BinaryStream):
+class EncapsulatedPacket(Packet):
     reliability = None
     isFragmented = None
     needAck = None
@@ -13,6 +13,7 @@ class EncapsulatedPacket(BinaryStream):
     fagmentSize = None
     fragmentId = None
     fragmentIndex = None
+    body = None
     
     def encodeHeader(self):
         header = self.reliability << 5
@@ -21,7 +22,19 @@ class EncapsulatedPacket(BinaryStream):
         self.putByte(header)
         
     def encodePayload(self):
-        pass
+        self.putShort(len(self.body) << 3)
+        if self.isReliable(self.reliability):
+            self.putLTriad(self.reliableFrameIndex)
+        if self.isSequenced(self.reliability):
+            self.putLTriad(self.sequencedFrameIndex)
+        if self.isSequencedOrOrdered(self.reliability):
+            self.putLTriad(self.orderedFrameIndex)
+            self.putByte(self.orderedFrameChannel)
+        if self.isFragmented:
+            self.putInt(self.fagmentSize)
+            self.putByte(self.fragmentId)
+            self.putInt(self.fragmentIndex)
+        self.put(self.body)
     
     def decodeHeader(self):
         flags = self.getByte()
