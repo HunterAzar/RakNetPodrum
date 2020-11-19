@@ -5,7 +5,6 @@ class EncapsulatedPacket(Packet):
     reliability = None
     isFragmented = None
     needAck = None
-    length = None
     reliableFrameIndex = None
     sequencedFrameIndex = None
     orderedFrameIndex = None
@@ -39,10 +38,22 @@ class EncapsulatedPacket(Packet):
     def decodeHeader(self):
         flags = self.getByte()
         self.reliability = (flags & 224) >> 5
-        self.isFragmented = (flags & 0x10) > 0
+        self.isFragmented = (flags & GeneralVariables.bitFlags["Split"]) > 0
         
     def decodePayload(self):
-        pass
+        length = self.getShort() >> 3
+        if self.isReliable(self.reliability):
+            self.reliableFrameIndex = self.getLTriad()
+        if self.isSequenced(self.reliability):
+            self.sequencedFrameIndex = self.getLTriad()
+        if self.isSequencedOrOrdered(self.reliability):
+            self.orderedFrameIndex = self.getLTriad()
+            self.orderedFrameChannel = self.getByte()
+        if self.isFragmented:
+            self.fagmentSize = self.getInt()
+            self.fragmentId = self.getByte()
+            self.fragmentIndex = self.getInt()
+        self.body = self.get(length)
     
     @staticmethod
     def isReliable(reliability):
