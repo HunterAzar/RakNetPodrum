@@ -26,4 +26,4 @@ class DataPacket(Packet):
             packet.buffer = data
             packet.decode()
             self.packets.append(packet)
-            self.offset += len(data)
+            self.offset += packet.getTotalLength()
