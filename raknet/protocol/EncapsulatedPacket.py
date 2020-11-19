@@ -54,6 +54,14 @@ class EncapsulatedPacket(Packet):
             self.fragmentId = self.getByte()
             self.fragmentIndex = self.getInt()
         self.body = self.get(length)
+        
+    def getTotalLength(self):
+        value = 3
+        value += 3 if self.reliableFrameIndex != None else 0
+        value += 4 if self.orderedFrameIndex != None else 0
+        value += 10 if self.isFragmented else 0
+        value += len(self.body)
+        return value
     
     @staticmethod
     def isReliable(reliability):
