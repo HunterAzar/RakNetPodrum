@@ -31,5 +31,8 @@ class DataPacket(Packet):
     def getTotalLength(self):
         length = 4
         for packet in self.packets:
-            length += packet.getTotalLength() if isinstance(packet, EncapsulatedPacket) else len(packet)
+            if isinstance(packet, EncapsulatedPacket):
+                packet.getTotalLength()
+            elif isinstance(packet, bytes):
+                length += len(packet)
         return length
