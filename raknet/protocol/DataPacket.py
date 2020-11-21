@@ -32,7 +32,7 @@ class DataPacket(Packet):
         length = 4
         for packet in self.packets:
             if isinstance(packet, EncapsulatedPacket):
-                packet.getTotalLength()
+                length += packet.getTotalLength()
             elif isinstance(packet, bytes):
                 length += len(packet)
         return length
