@@ -27,3 +27,9 @@ class DataPacket(Packet):
             packet.decode()
             self.packets.append(packet)
             self.offset += packet.getTotalLength()
+
+    def getTotalLength(self):
+        length = 4
+        for packet in self.packets:
+            length += packet.getTotalLength() if isinstance(packet, EncapsulatedPacket) else len(packet.getBuffer())
+        return length
