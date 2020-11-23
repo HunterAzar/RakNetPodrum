@@ -22,6 +22,7 @@ class GeneralVariables:
         "ConnectionRequest": 0x09,
         "ConnectionRequestAccepted": 0x10,
         "NewConnection": 0x13,
+        "ConnectionClosed": 0x15,
         "IncompatibleProtocol": 0x19,
         "Nack": 0xa0,
         "Ack": 0xc0
