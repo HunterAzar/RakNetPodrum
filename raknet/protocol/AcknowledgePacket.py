@@ -40,4 +40,19 @@ class AcknowledgePacket(Packet):
         self.put(stream.buffer)
 
     def decodePayload(self):
-        pass
+        self.sequenceNumbers = []
+        recordsCount = self.getShort()
+        for i in range(0, recordsCount):
+            isInRange = self.getByte()
+            if isInRange == 0:
+                startIndex = self.getLTriad()
+                endIndex = self.getLTriad()
+                index = startIndex
+                while index <= endIndex:
+                    self.sequenceNumbers.append(index)
+                    if len(self.sequenceNumbers) > 4096:
+                        raise Exception("Max sequence number count exceed")
+                    index += 1
+            else:
+                index = self.getLTriad()
+                self.sequenceNumbers.append(index)
