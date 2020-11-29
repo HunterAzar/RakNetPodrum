@@ -1,4 +1,10 @@
 from ..GeneralVariables import GeneralVariables
+from ..protocol.ConnectedPing import ConnectedPing
+from ..protocol.ConnectedPong import ConnectedPong
+from ..protocol.ConnectionClosed import ConnectionClosed
+from ..protocol.ConnectionRequest import ConnectionRequest
+from ..protocol.ConnectionRequestAccepted import ConnectionRequestAccepted
+from ..protocol.NewConnection import NewConnection
 from ..protocol.IncompatibleProtocol import IncompatibleProtocol
 from ..protocol.OpenConnectionReply1 import OpenConnectionReply1
 from ..protocol.OpenConnectionReply2 import OpenConnectionReply2
@@ -7,9 +13,39 @@ from ..protocol.OpenConnectionRequest2 import OpenConnectionRequest2
 from ..protocol.UnconnectedPing import UnconnectedPing
 from ..protocol.UnconnectedPingOpenConnections import UnconnectedPingOpenConnections
 from ..protocol.UnconnectedPong import UnconnectedPong
+from time import time
 from ..utils.InternetAddress import InternetAddress
 
 class Handler:
+    def handleConnectedPing(self, data):
+        packet = ConnectedPing()
+        packet.buffer = data
+        packet.decode()
+        newPacket = ConnectedPong()
+        newPacket.requestTime = packet.time
+        newPacket.replyTime = int(time())
+        return newPacket
+    
+    def handleConnectionRequest(self, data, address):
+        packet = ConnectionRequest()
+        packet.buffer = data
+        packet.decode()
+        newPacket = ConnectionRequestAccepted()
+        newPacket.clientAddress = address
+        newPacket.systemIndex = 0
+        newPacket.systemAddresses = []
+        for i in range(0, GeneralVariables.options["systemAddressesCount"]):
+            newPacket.systemAddresses.insert(i, InternetAddress("0.0.0.0", 0))
+        newPacket.requestTime = packet.time
+        newPacket.replyTime = int(time())
+        return newPacket
+        
+    def handleNewConnection(self, data, address):
+        packet = NewConnection()
+        packet.buffer = data
+        if address == packet.clientAddress:
+            pass # Todo set connection status to connected
+        
     def handleUnconnectedPing(self, data):
         packet = UnconnectedPing()
         packet.buffer = data
@@ -74,5 +110,5 @@ class Handler:
             newPacket = self.handleOpenConnectionRequest1(data)
             GeneralVariables.server.sendPacket(newPacket, address[0], address[1])
         elif id == GeneralVariables.packetIds["OpenConnectionRequest2"]:
-            newPacket = self.handleOpenConnectionRequest2(data, InternetAddress(address[0], address[1], 4))
+            newPacket = self.handleOpenConnectionRequest2(data, InternetAddress(address[0], address[1]))
             GeneralVariables.server.sendPacket(newPacket, address[0], address[1])
