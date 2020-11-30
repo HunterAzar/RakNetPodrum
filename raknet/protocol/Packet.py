@@ -4,6 +4,7 @@ from ..utils.InternetAddress import InternetAddress
 
 class Packet(BinaryStream):
     id = -1
+    sendTime = None
 
     def decodeHeader(self):
         return self.getByte()
