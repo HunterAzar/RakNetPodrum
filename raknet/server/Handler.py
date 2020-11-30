@@ -1,9 +1,11 @@
 from ..GeneralVariables import GeneralVariables
+from ..protocol.Ack import Ack
 from ..protocol.ConnectedPing import ConnectedPing
 from ..protocol.ConnectedPong import ConnectedPong
 from ..protocol.ConnectionClosed import ConnectionClosed
 from ..protocol.ConnectionRequest import ConnectionRequest
 from ..protocol.ConnectionRequestAccepted import ConnectionRequestAccepted
+from ..protocol.Nack import Nack
 from ..protocol.NewConnection import NewConnection
 from ..protocol.IncompatibleProtocol import IncompatibleProtocol
 from ..protocol.OpenConnectionReply1 import OpenConnectionReply1
@@ -93,6 +95,30 @@ class Handler:
         newPacket.useSecurity = 0
         GeneralVariables.server.addConnection(address, packet.mtuSize)
         return newPacket
+    
+    def handleAck(self, data, address):
+        connection = GeneralVariables.server.getConnection(address)
+        packet = Ack()
+        packet.buffer = data
+        packet.decode()
+        for sequenceNumber in packet.sequenceNumbers:
+            if sequenceNumber in connection.recoveryQueue:
+                del connection.recoveryQueue[sequenceNumber]
+                
+    def handleNack(self, data, address):
+        connection = GeneralVariables.server.getConnection(address)
+        packet = Ack()
+        packet.buffer = data
+        packet.decode()
+        for sequenceNumber in packet.sequenceNumbers:
+            if sequenceNumber in connection.recoveryQueue:
+                newPacket = connection.recoveryQueue[sequenceNumber]
+                newPacket.sequenceNumber = connection.sendSequenceNumber
+                connection.sendSequenceNumber += 1
+                newPacket.sendTime = time()
+                newPacket.encode()
+                GeneralVariables.server.sendPacket(newPacket, address[0], address[1])
+                del connection.recoveryQueue[sequenceNumber]
     
     def handle(self, data, address):
         id = data[0]
