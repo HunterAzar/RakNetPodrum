@@ -10,11 +10,8 @@ class DataPacket(Packet):
     def encodePayload(self):
         self.putLTriad(self.sequenceNumber)
         for packet in self.packets:
-            if isinstance(packet, EncapsulatedPacket):
-                packet.encode()
-                self.put(packet.buffer)
-            elif isinstance(packet, bytes):
-                self.put(packet)
+            packet.encode()
+            self.put(packet.buffer)
         
     def decodePayload(self):
         self.sequenceNumber = self.getLTriad()
