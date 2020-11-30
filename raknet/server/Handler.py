@@ -119,6 +119,34 @@ class Handler:
                 newPacket.encode()
                 GeneralVariables.server.sendPacket(newPacket, address[0], address[1])
                 del connection.recoveryQueue[sequenceNumber]
+                
+    def handleDataPacket(self, data, address):
+        connection = GeneralVariables.server.getConnection(address)
+        packet = DataPacket()
+        packet.buffer = data
+        packet.decode()
+        if packet.sequenceNumber < connection.windowStart:
+            return
+        elif packet.sequenceNumber > connection.windowEnd:
+            return
+        elif packet.sequenceNumber in connection.receivedWindow:
+            return
+        if packet.sequenceNumber in connection.nackQueue:
+            connection.nackQueue.remove(packet.sequenceNumber)
+        connection.ackQueue.append(packet.sequenceNumber)
+        connection.receivedWindow.append(packet.sequenceNumber)
+        diff = packet.sequenceNumber - connection.lastSequenceNumber
+        if diff != 1:
+            for i in range(connection.lastSequenceNumber + 1, packet.sequenceNumber):
+                if i not in connection.receivedWindow:
+                    connection.nackQueue.append(i)
+        if diff >= 1:
+            connection.lastSequenceNumber = packet.sequenceNumber
+            connection.windowStart += diff
+            connection.windowEnd += diff
+        for encapsulatedPacket in packet.packets:
+            connection.receivePacket(encapsulatedPacket)
+        return
     
     def handle(self, data, address):
         id = data[0]
