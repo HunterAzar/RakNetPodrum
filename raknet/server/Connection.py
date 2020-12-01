@@ -55,6 +55,29 @@ class Connection:
             packet.sequenceNumbers = self.nackQueue
             GeneralVariables.server.sendPacket(packet, self.address)
             self.nackQueue = []
+        if len(self.packetToSend) > 0:
+            limit = 16
+            for key, packet in enumerate(self.packetToSend):
+                packet.sendTime = timestamp
+                packet.encode()
+                self.recoveryQueue[packet.sequenceNumber] = packet
+                del self.packetToSend[key]
+                self.sendPacket(packet)
+                limit -= 1
+                if limit <= 0:
+                    break
+            if len(self.packetToSend) > 2048:
+                self.packetToSend = []
+        for sequenceNumber, packet in dict(self.recoveryQueue).items():
+            if packet.sendTime < (time() - 8000):
+                self.packetToSend.append(packet)
+                del self.recoveryQueue[sequenceNumber]
+        for sequenceNumber in self.receivedWindow:
+            if sequenceNumber < self.windowStart:
+                del self.receivedWindow.remove(sequenceNumber)
+            else:
+                break
+        self.sendPacketQueue()
         
     def receive(self, data):
         self.isActive = True
