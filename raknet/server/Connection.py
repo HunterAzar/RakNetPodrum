@@ -133,7 +133,7 @@ class Connection:
             newPacket.packets.append(packet)
             GeneralVariables.server.sendPacket(newPacket, self.address)
             newPacket.sendTime = time()
-            self.recoveryQueue[newPacket.sequenceNumber, newPacket]
+            self.recoveryQueue[newPacket.sequenceNumber] = newPacket
             return
         length = self.sendQueue.getTotalLength()
         if length + packet.getTotalLength() > self.mtuSize:
