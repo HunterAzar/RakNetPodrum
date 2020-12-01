@@ -39,7 +39,7 @@ class Handler:
         newPacket.systemIndex = 0
         newPacket.systemAddresses = []
         for i in range(0, GeneralVariables.options["systemAddressesCount"]):
-            newPacket.systemAddresses.insert(i, InternetAddress("0.0.0.0", 0))
+            newPacket.systemAddresses.insert(i, InternetAddress("127.0.0.1", 0))
         newPacket.requestTime = packet.time
         newPacket.replyTime = int(time())
         return newPacket
