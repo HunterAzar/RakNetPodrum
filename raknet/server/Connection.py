@@ -87,15 +87,15 @@ class Connection:
         header = data[0]
         if (header & GeneralVariables.bitFlags["Valid"]) == 0:
             return
-        elif header & GeneralVariables.bitFlags["Ack"]:
+        if header & GeneralVariables.bitFlags["Ack"]:
             return self.handler.handleAck(data, self.address)
-        elif header & GeneralVariables.bitFlags["Nack"]:
+        if header & GeneralVariables.bitFlags["Nack"]:
             return self.handler.handleNack(data, self.address)
         else:
             return self.handler.handleDataPacket(data, self.address)
         
     def receivePacket(self, packet):
-        if packet.reliableFrameIndex == None:
+        if packet.reliableFrameIndex is None:
             self.handler.handleEncapsulatedPacket(packet, self.address)
         else:
             if packet.reliableFrameIndex < self.reliableWindowStart or packet.reliableFrameIndex > self.reliableWindowEnd:
