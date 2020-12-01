@@ -156,10 +156,10 @@ class Handler:
         if packet.isFragmented:
             self.handleFragmentedPacket(packet, address)
             return
-        id = packet.body[0]
-        if id < 0x80:
+        packetId = packet.body[0]
+        if packetId < 0x80:
             if connection.status == GeneralVariables.connectionStates["Connecting"]:
-                if id == GeneralVariables.packetIds["ConnectionRequest"]:
+                if packetId == GeneralVariables.packetIds["ConnectionRequest"]:
                     print("Connecting...")
                     packet = self.handleConnectionRequest(packet.body)
                     packet.encode()
@@ -167,11 +167,11 @@ class Handler:
                     sendPacket.reliability = 0
                     sendPacket.body = packet.buffer
                     conection.addToQueue(sendPacket, GeneralVariables.packetPriorities["Immediate"])
-                elif id == GeneralVariables.packetIds["NewConnection"]:
+                elif packetId == GeneralVariables.packetIds["NewConnection"]:
                     self.handleNewConnection(packet.body, address)
-            elif id == GeneralVariables.packetIds["ConnectionClosed"]:
+            elif packetId == GeneralVariables.packetIds["ConnectionClosed"]:
                 GeneralVariables.server.removeConnection(address)
-            elif id == GeneralVariables.packetIds["ConnectedPing"]:
+            elif packetId == GeneralVariables.packetIds["ConnectedPing"]:
                 packet = self.handleConnectedPing(packet.body)
                 packet.encode()
                 sendPacket = EncapsulatedPacket()
@@ -200,21 +200,21 @@ class Handler:
             conection.receivePacket(encapsulatedPacketpk)
     
     def handle(self, data, address):
-        id = data[0]
+        packetId = data[0]
         if GeneralVariables.options["debug"]:
             print(GeneralVariables.packetNames[id])
         connection = GeneralVariables.server.getConnection(InternetAddress(address[0], address[1]))
         if connection:
             connection.receive(data)
-        elif id == GeneralVariables.packetIds["UnconnectedPing"]:
+        elif packetId == GeneralVariables.packetIds["UnconnectedPing"]:
             newPacket = self.handleUnconnectedPing(data)
             GeneralVariables.server.sendPacket(newPacket, address[0], address[1])
-        elif id == GeneralVariables.packetIds["UnconnectedPingOpenConnections"]:
+        elif packetId == GeneralVariables.packetIds["UnconnectedPingOpenConnections"]:
             newPacket = self.handleUnconnectedPingOpenConnections(data)
             GeneralVariables.server.sendPacket(newPacket, address[0], address[1])
-        elif id == GeneralVariables.packetIds["OpenConnectionRequest1"]:
+        elif packetId == GeneralVariables.packetIds["OpenConnectionRequest1"]:
             newPacket = self.handleOpenConnectionRequest1(data)
             GeneralVariables.server.sendPacket(newPacket, address[0], address[1])
-        elif id == GeneralVariables.packetIds["OpenConnectionRequest2"]:
+        elif packetId == GeneralVariables.packetIds["OpenConnectionRequest2"]:
             newPacket = self.handleOpenConnectionRequest2(data, InternetAddress(address[0], address[1]))
             GeneralVariables.server.sendPacket(newPacket, address[0], address[1])
