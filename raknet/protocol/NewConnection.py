@@ -2,7 +2,7 @@ from ..GeneralVariables import GeneralVariables
 from .Packet import Packet
 
 class NewConnection(Packet):
-    id = GeneralVariables.ids["NewConnection"]
+    id = GeneralVariables.packetIds["NewConnection"]
     clientAddress = None
     systemAddresses = []
     requestTime = None
