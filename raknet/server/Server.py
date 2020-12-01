@@ -1,5 +1,6 @@
 import socket
 from threading import Thread
+from time import time, sleep
 from .Connection import Connection
 from ..GeneralVariables import GeneralVariables
 from .Handler import Handler
