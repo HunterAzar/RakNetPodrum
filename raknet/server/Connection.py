@@ -90,7 +90,7 @@ class Connection:
         elif header & GeneralVariables.bitFlags["Nack"]:
             return Handler.handleNack(data, self.address)
         else:
-            return Handler.handleDatagram(data, self.address)
+            return Handler.handleDataPacket(data, self.address)
         
     def receivePacket(self, packet):
         if packet.reliableFrameIndex == None:
