@@ -130,9 +130,9 @@ class Handler:
         packet.decode()
         if packet.sequenceNumber < connection.windowStart:
             return
-        elif packet.sequenceNumber > connection.windowEnd:
+        if packet.sequenceNumber > connection.windowEnd:
             return
-        elif packet.sequenceNumber in connection.receivedWindow:
+        if packet.sequenceNumber in connection.receivedWindow:
             return
         if packet.sequenceNumber in connection.nackQueue:
             connection.nackQueue.remove(packet.sequenceNumber)
