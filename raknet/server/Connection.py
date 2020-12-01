@@ -1,7 +1,9 @@
 from copy import deepcopy
 from ..GeneralVariables import GeneralVariables
+from ..protocol.Ack import Ack
 from ..protocol.DataPacket import DataPacket
 from ..protocol.EncapsulatedPacket import EncapsulatedPacket
+from ..protocol.Nack import Nack
 from ..server.Handler import Handler
 from time import time
 
@@ -37,6 +39,22 @@ class Connection:
         self.channelIndex = [0]*32
         self.lastUpdateTime = time()
         self.sendQueue = DataPacket()
+        
+    def update(self, timestamp):
+        if not self.isActive && self.lastUpdate + 10000 < timestamp:
+            GeneralVariables.server.removeConnection(self.address)
+            return
+        self.active = False
+        if len(self.ackQueue) > 0:
+            packet = Ack()
+            packet.sequenceNumbers = self.ackQueue
+            GeneralVariables.server.sendPacket(packet, self.address)
+            self.ackQueue = []
+        if len(self.nackQueue) > 0:
+            packet = Nack()
+            packet.sequenceNumbers = self.nackQueue
+            GeneralVariables.server.sendPacket(packet, self.address)
+            self.nackQueue = []
         
     def receive(self, data):
         self.isActive = True
