@@ -203,7 +203,7 @@ class Handler:
         id = data[0]
         if GeneralVariables.options["debug"]:
             print(GeneralVariables.packetNames[id])
-        if GeneralVariables.server.getConnection():
+        if GeneralVariables.server.getConnection(address):
             connection = GeneralVariables.server.getConnection(address)
             connection.receive(data)
             connection.update(time())
