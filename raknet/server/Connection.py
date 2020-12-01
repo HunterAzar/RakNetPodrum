@@ -38,7 +38,7 @@ class Connection:
         self.mtuSize = mtuSize
         self.status = GeneralVariables.connectionStates["Connecting"]
         self.channelIndex = [0]*32
-        self.lastUpdateTime = time()
+        self.lastUpdate = time()
         self.sendQueue = DataPacket()
         self.handler = Handler()
         
