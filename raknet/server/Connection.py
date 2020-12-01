@@ -1,6 +1,8 @@
+from copy import deepcopy
 from ..GeneralVariables import GeneralVariables
 from ..protocol.DataPacket import DataPacket
 from ..protocol.EncapsulatedPacket import EncapsulatedPacket
+from ..server.Handler import Handler
 from time import time
 
 class Connection:
@@ -35,6 +37,36 @@ class Connection:
         self.channelIndex = [0]*32
         self.lastUpdateTime = time()
         self.sendQueue = DataPacket()
+        
+    def receivePacket(self, packet):
+        if packet.reliableFrameIndex == None:
+            Handler.handleEncapsulatedPacket(packet, self.address)
+        else:
+            if packet.reliableFrameIndex < self.reliableWindowStart || packet.reliableFrameIndex > self.reliableWindowEnd:
+                return
+            if packet.reliableFrameIndex - self.lastReliableIndex == 1:
+                self.lastReliableIndex += 1
+                self.reliableWindowStart += 1
+                self.reliableWindowEnd += 1
+                Handler.handleEncapsulatedPacket(packet, self.address)
+                if len(self.reliableWindow) > 0:
+                    windows = deepcopy(self.reliableWindow)
+                    reliableWindow = {}
+                    windows = dict(sorted(windows.items()))
+                    for k, v in windows.items():
+                        reliableWindow[k] = v
+                    self.reliableWindow = reliableWindow
+                    for sequenceIndex, packet in self.reliableWindow.items():
+                        if (sequenceIndex - self.lastReliableIndex) != 1:
+                            break
+                        self.lastReliableIndex += 1
+                        self.reliableWindowStart += 1
+                        self.reliableWindowEnd += 1
+                        Handler.handleEncapsulatedPacket(packet, self.address)
+                        del self.reliableWindow[seqIndex]
+            else:
+                self.reliableWindow[packet.reliableFrameIndex] = packet
+                
         
     def addToQueue(self, packet, flags = GeneralVariables.packetPriorities["Normal"]):
         priority = flags & 0b1
