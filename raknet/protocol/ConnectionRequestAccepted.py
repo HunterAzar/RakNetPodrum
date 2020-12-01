@@ -2,7 +2,7 @@ from ..GeneralVariables import GeneralVariables
 from .Packet import Packet
 
 class ConnectionRequestAccepted(Packet):
-    id = GeneralVariables.ids["ConnectionRequestAccepted"]
+    id = GeneralVariables.packetIds["ConnectionRequestAccepted"]
     clientAddress = None
     systemIndex = None
     systemAddresses = []
