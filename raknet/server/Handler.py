@@ -202,7 +202,7 @@ class Handler:
     def handle(self, data, address):
         packetId = data[0]
         if GeneralVariables.options["debug"]:
-            print(GeneralVariables.packetNames[packetId])
+            print(packetId)
         connection = GeneralVariables.server.getConnection(InternetAddress(address[0], address[1]))
         if connection:
             connection.receive(data)
