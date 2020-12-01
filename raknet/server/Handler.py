@@ -5,6 +5,8 @@ from ..protocol.ConnectedPong import ConnectedPong
 from ..protocol.ConnectionClosed import ConnectionClosed
 from ..protocol.ConnectionRequest import ConnectionRequest
 from ..protocol.ConnectionRequestAccepted import ConnectionRequestAccepted
+from ..protocol.DataPacket import DataPacket
+from ..protocol.EncapsulatedPacket import EncapsulatedPacket
 from ..protocol.Nack import Nack
 from ..protocol.NewConnection import NewConnection
 from ..protocol.IncompatibleProtocol import IncompatibleProtocol
@@ -43,10 +45,11 @@ class Handler:
         return newPacket
         
     def handleNewConnection(self, data, address):
+        connection = GeneralVariables.server.getConnection(address)
         packet = NewConnection()
         packet.buffer = data
         if address == packet.clientAddress:
-            pass # Todo set connection status to connected
+            connection.status = GeneralVariables.connectionStates["Connected"]
         
     def handleUnconnectedPing(self, data):
         packet = UnconnectedPing()
@@ -147,6 +150,36 @@ class Handler:
         for encapsulatedPacket in packet.packets:
             connection.receivePacket(encapsulatedPacket)
         return
+    
+    def handlerEncapsulatedPacket(self, packet, address):
+        connection = GeneralVariables.server.getConnection(address)
+        if packet.isFragmented:
+            self.handleFragmented(packet, address)
+            return
+        id = packet.body[0]
+        if id < 0x80:
+            if connection.status == GeneralVariables.connectionStates["Connecting"]:
+                if id == GeneralVariables.packetIds["ConnectionRequest"]:
+                    print("Connecting...")
+                    packet = self.handleConnectionRequest(packet.body)
+                    packet.encode()
+                    sendPacket = EncapsulatedPacket()
+                    sendPacket.reliability = 0
+                    sendPacket.body = packet.buffer
+                    conection.addToQueue(sendPacket, GeneralVariables.packetPriorities["Immediate"])
+                elif id == GeneralVariables.packetIds["NewConnection"]:
+                    self.handleNewConnection(packet.body, address)
+            elif id == GeneralVariables.packetIds["ConnectionClosed"]:
+                GeneralVariables.server.removeConnection(address)
+            elif id == GeneralVariables.packetIds["ConnectedPing"]:
+                packet = self.handleConnectedPing(packet.body)
+                packet.encode()
+                sendPacket = EncapsulatedPacket()
+                sendPacket.reliability = 0
+                sendPacket.body = packet.buffer
+                conection.addToQueue(sendPacket)
+            elif connection.status == GeneralVariables.connectionStates["Connected"]:
+                print("Connected!")
     
     def handle(self, data, address):
         id = data[0]
