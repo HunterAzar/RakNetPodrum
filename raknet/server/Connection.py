@@ -38,6 +38,19 @@ class Connection:
         self.lastUpdateTime = time()
         self.sendQueue = DataPacket()
         
+    def receive(self, data):
+        self.isActive = True
+        self.lastUpdate = time()
+        header = data[0]
+        if (header & GeneralVariables.bitFlags["Valid"]) == 0:
+            return
+        elif header & GeneralVariables.bitFlags["Ack"]:
+            return Handler.handleAck(data, self.address)
+        elif header & GeneralVariables.bitFlags["Nack"]:
+            return Handler.handleNack(data, self.address)
+        else:
+            return Handler.handleDatagram(data, self.address)
+        
     def receivePacket(self, packet):
         if packet.reliableFrameIndex == None:
             Handler.handleEncapsulatedPacket(packet, self.address)
