@@ -2,7 +2,7 @@ from ..GeneralVariables import GeneralVariables
 from .Packet import Packet
 
 class ConnectedPing(Packet):
-    id = GeneralVariables.ids["ConnectedPing"]
+    id = GeneralVariables.packetIds["ConnectedPing"]
     time = None
 
     def encodePayload(self):
