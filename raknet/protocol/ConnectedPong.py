@@ -2,7 +2,7 @@ from ..GeneralVariables import GeneralVariables
 from .Packet import Packet
 
 class ConnectedPong(Packet):
-    id = GeneralVariables.ids["ConnectedPong"]
+    id = GeneralVariables.packetIds["ConnectedPong"]
     requestTime = None
     replyTime = None
 
