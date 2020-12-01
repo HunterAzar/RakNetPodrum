@@ -13,7 +13,7 @@ class Connection:
     status = None
     channelIndex = None
     isActive = False
-    lastUpdateTime = None
+    lastUpdate = None
     ackQueue = []
     nackQueue = []
     recoveryQueue = {}
