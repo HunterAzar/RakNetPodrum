@@ -136,4 +136,7 @@ class Connection:
             self.sendQueue = DataPacket()
 
     def close(self):
-        pass # Todo
+        packet = EncapsulatedPacket()
+        packet.buffer = b'\x00\x00\x08\x15'
+        packet.decode()
+        self.addEncapsulatedToQueue(packet, GeneralVariables.packetPriorities["Immediate"])
