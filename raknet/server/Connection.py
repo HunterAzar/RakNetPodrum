@@ -74,7 +74,7 @@ class Connection:
                 del self.recoveryQueue[sequenceNumber]
         for sequenceNumber in self.receivedWindow:
             if sequenceNumber < self.windowStart:
-                del self.receivedWindow.remove(sequenceNumber)
+                self.receivedWindow.remove(sequenceNumber)
             else:
                 break
         self.sendPacketQueue()
