@@ -96,7 +96,7 @@ class Connection:
         if packet.reliableFrameIndex == None:
             Handler.handleEncapsulatedPacket(packet, self.address)
         else:
-            if packet.reliableFrameIndex < self.reliableWindowStart || packet.reliableFrameIndex > self.reliableWindowEnd:
+            if packet.reliableFrameIndex < self.reliableWindowStart or packet.reliableFrameIndex > self.reliableWindowEnd:
                 return
             if packet.reliableFrameIndex - self.lastReliableIndex == 1:
                 self.lastReliableIndex += 1
