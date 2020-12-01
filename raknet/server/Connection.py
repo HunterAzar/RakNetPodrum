@@ -111,13 +111,13 @@ class Connection:
                     for k, v in windows.items():
                         reliableWindow[k] = v
                     self.reliableWindow = reliableWindow
-                    for sequenceIndex, packet in self.reliableWindow.items():
+                    for sequenceIndex, encapsulatedPacket in self.reliableWindow.items():
                         if (sequenceIndex - self.lastReliableIndex) != 1:
                             break
                         self.lastReliableIndex += 1
                         self.reliableWindowStart += 1
                         self.reliableWindowEnd += 1
-                        self.handler.handleEncapsulatedPacket(packet, self.address)
+                        self.handler.handleEncapsulatedPacket(encapsulatedPacket, self.address)
                         del self.reliableWindow[seqIndex]
             else:
                 self.reliableWindow[packet.reliableFrameIndex] = packet
