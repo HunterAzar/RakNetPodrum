@@ -182,7 +182,7 @@ class Connection:
             self.addToQueue(packet, flags)
             
     def sendPacketQueue(self):
-        if self.sendQueue.packets.getTotalLength() > 0:
+        if self.sendQueue.getTotalLength() > 0:
             self.sendQueue.sequenceNumber = self.sendSequenceNumber
             self.sendSequenceNumber += 1
             GeneralVariables.server.sendPacket(self.sendQueue, self.address.ip, self.address.port)
