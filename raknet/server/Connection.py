@@ -41,7 +41,7 @@ class Connection:
         self.sendQueue = DataPacket()
         
     def update(self, timestamp):
-        if not self.isActive && self.lastUpdate + 10000 < timestamp:
+        if not self.isActive and self.lastUpdate + 10000 < timestamp:
             GeneralVariables.server.removeConnection(self.address)
             return
         self.active = False
