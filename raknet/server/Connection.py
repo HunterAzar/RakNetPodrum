@@ -50,12 +50,12 @@ class Connection:
         if len(self.ackQueue) > 0:
             packet = Ack()
             packet.sequenceNumbers = self.ackQueue
-            GeneralVariables.server.sendPacket(packet, self.address)
+            GeneralVariables.server.sendPacket(packet, self.address.ip, self.address.port)
             self.ackQueue = []
         if len(self.nackQueue) > 0:
             packet = Nack()
             packet.sequenceNumbers = self.nackQueue
-            GeneralVariables.server.sendPacket(packet, self.address)
+            GeneralVariables.server.sendPacket(packet, self.address.ip, self.address.port)
             self.nackQueue = []
         if len(self.packetToSend) > 0:
             limit = 16
@@ -64,7 +64,7 @@ class Connection:
                 packet.encode()
                 self.recoveryQueue[packet.sequenceNumber] = packet
                 del self.packetToSend[key]
-                self.sendPacket(packet)
+                self.sendPacket(packet, self.address.ip, self.address.port)
                 limit -= 1
                 if limit <= 0:
                     break
@@ -131,7 +131,7 @@ class Connection:
             newPacket.sequenceNumber = self.sendSequenceNumber
             self.sendSequenceNumber += 1
             newPacket.packets.append(packet)
-            GeneralVariables.server.sendPacket(newPacket, self.address)
+            GeneralVariables.server.sendPacket(newPacket, self.address.ip, self.address.port)
             newPacket.sendTime = time()
             self.recoveryQueue[newPacket.sequenceNumber] = newPacket
             return
@@ -186,7 +186,7 @@ class Connection:
         if self.sendQueue.packets.getTotalLength() > 0:
             self.sendQueue.sequenceNumber = self.sendSequenceNumber
             self.sendSequenceNumber += 1
-            GeneralVariables.server.sendPacket(self.sendQueue, self.address)
+            GeneralVariables.server.sendPacket(self.sendQueue, self.address.ip, self.address.port)
             self.sendQueue.sendTime = time()
             self.recoveryQueue[self.sendQueue.sequenceNumber] = self.sendQueue
             self.sendQueue = DataPacket()
