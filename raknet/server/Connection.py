@@ -1,5 +1,6 @@
 from ..GeneralVariables import GeneralVariables
 from ..protocol.DataPacket import DataPacket
+from ..protocol.EncapsulatedPacket import EncapsulatedPacket
 from time import time
 
 class Connection:
@@ -39,7 +40,7 @@ class Connection:
         priority = flags & 0b1
         if priority == GeneralVariables.packetPriorities["Immediate"]:
             newPacket = DataPacket()
-            packet.sequenceNumber = self.sendSequenceNumber
+            newPacket.sequenceNumber = self.sendSequenceNumber
             self.sendSequenceNumber += 1
             newPacket.packets.append(packet)
             GeneralVariables.server.sendPacket(newPacket, self.address)
@@ -51,6 +52,48 @@ class Connection:
             self.sendPacketQueue()
         self.sendQueue.packets.append(packet)
         
+    def addEncapsulatedToQueue(self, packet, flags = GeneralVariables.packetPriorities["Normal"]):
+        if packet.reliability != 5:
+            if packet.reliability >= 2 or packet.reliabilit <= 7:
+                packet.reliableFrameIndex = self.reliableFrameIndex
+                self.reliableFrameIndex += 1
+                if packet.reliability == 3:
+                    packet.orderedFrameIndex = self.channelIndex[packet.orderedFrameIndex]
+                    self.channelIndex[packet.orderedFrameIndex] += 1
+        if packet.getTotalLength() + 4 > self.mtuSize:
+            buffers = []
+            index = 0
+            fragmentIndex = 0
+            while index < len(packet.buffer):
+                buffer = []
+                buffer.insert(0, fragmentIndex)
+                fragmentIndex += 1
+                oldIndex = index
+                index += self.mtuSize
+                buffer.insert(1, packet.buffer[oldIndex:index - 60])
+                buffers.append(buffer)
+            self.fragmentId += 1
+            fragmentId = self.fragmentId % 65536
+            for count, buffer in buffers:
+                newPacket = EncapsulatedPacket()
+                newPacket.fragmentId = fragmentId
+                newPacket.isFragmented = True
+                newPacket.fagmentSize = len(buffers)
+                newPacket.reliability = packet.reliability
+                newPacket.fragmentIndex = count
+                newPacket.body = buffer
+                if count > 0:
+                    newPacket.reliableFrameIndex = self.reliableFrameIndex
+                    self.reliableFrameIndex += 1
+                else:
+                    newPacket.reliableFrameIndex = packet.reliableFrameIndex
+                if newPacket.reliability == 3:
+                    newPacket.orderedFrameChannel = packet.orderedFrameChannel
+                    newPacket.orderedFrameIndex = packet.orderedFrameIndex
+                self.addToQueue(newPacket, flags | GeneralVariables.packetPriorities["Immediate"])
+        else:
+            self.addToQueue(packet, flags)
+            
     def sendPacketQueue(self):
         if self.sendQueue.packets.getTotalLength() > 0:
             self.sendQueue.sequenceNumber = self.sendSequenceNumber
