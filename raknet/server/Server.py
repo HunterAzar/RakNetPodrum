@@ -42,8 +42,7 @@ class Server(Thread):
         token = self.addressToToken(address)
         if token in self.connections:
             return self.connections[token]
-        else:
-            return None
+        return None
             
     def setOption(self, name, value):
         GeneralVariables.options[name] = value
