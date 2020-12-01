@@ -96,7 +96,7 @@ class Connection:
         
     def receivePacket(self, packet):
         if packet.reliableFrameIndex == None:
-            Handler.handleEncapsulatedPacket(packet, self.address)
+            self.handler.handleEncapsulatedPacket(packet, self.address)
         else:
             if packet.reliableFrameIndex < self.reliableWindowStart or packet.reliableFrameIndex > self.reliableWindowEnd:
                 return
