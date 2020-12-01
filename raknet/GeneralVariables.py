@@ -59,7 +59,7 @@ class GeneralVariables:
         "Reliable": 2,
         "ReliableOrdered": 3,
         "ReliableSequenced": 4,
-        "UnreliableWithAckReceipt)": 5,
+        "UnreliableWithAckReceipt": 5,
         "ReliableWithAckReceipt": 6,
         "ReliableOrderedWithAckReceipt": 7
     }
