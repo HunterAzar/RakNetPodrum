@@ -53,6 +53,11 @@ class Server(Thread):
             print(GeneralVariables.packetNames[packet.buffer[0]])
         self.socket.sendto(packet.buffer, (ip, port))
         
+    def tick(self):
+        for token, connection in self.connections.items():
+            connection.update(time())
+        sleep(1 / 100)
+        
     def startServer(self):
         self.start()
 
@@ -61,3 +66,4 @@ class Server(Thread):
             recv = self.socket.recvfrom(65535)
             if recv:
                 Handler().handle(recv[0], recv[1])
+                self.tick()
