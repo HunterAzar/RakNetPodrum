@@ -204,7 +204,8 @@ class Handler:
         if GeneralVariables.options["debug"]:
             print(GeneralVariables.packetNames[id])
         if GeneralVariables.server.getConnection():
-            pass # Todo Custom Packets / Data Packets
+            connection = GeneralVariables.server.getConnection(address)
+            connection.receive(data)
         elif id == GeneralVariables.packetIds["UnconnectedPing"]:
             newPacket = self.handleUnconnectedPing(data)
             GeneralVariables.server.sendPacket(newPacket, address[0], address[1])
