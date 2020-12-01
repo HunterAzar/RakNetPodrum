@@ -151,10 +151,10 @@ class Handler:
             connection.receivePacket(encapsulatedPacket)
         return
     
-    def handlerEncapsulatedPacket(self, packet, address):
+    def handleEncapsulatedPacket(self, packet, address):
         connection = GeneralVariables.server.getConnection(address)
         if packet.isFragmented:
-            self.handleFragmented(packet, address)
+            self.handleFragmentedPacket(packet, address)
             return
         id = packet.body[0]
         if id < 0x80:
@@ -180,6 +180,24 @@ class Handler:
                 conection.addToQueue(sendPacket)
             elif connection.status == GeneralVariables.connectionStates["Connected"]:
                 print("Connected!")
+                
+    def handleFragmentedPacket(self, packet, address):
+        connection = GeneralVariables.server.getConnection(address)
+        if packet.fragmentId in connection.fragmentedPackets:
+            value = connection.fragmentedPackets[packet.fragmentId]
+            value[packet.fragmentIndex] = packet
+            connection.fragmentedPackets[packet.fragmentId] = value
+        else:
+            connection.fragmentedPackets[packet.fragmentId] = {packet.fragmentIndex: packet}
+        localSplits = connection.fragmentedPackets[packet.fragmentId]
+        if len(localSplits) == packet.fragmentSize:
+            encapsulatedPacket = EncapsulatedPacket()
+            stream = BinaryStream()
+            for count, fragmentedPacket in enumerate(localSplits):
+                stream.put(fragmentedPacket.body)
+            del conection.fragmentedPackets[packet.fragmentId]
+            encapsulatedPacket.body = stream.buffer
+            conection.receivePacket(encapsulatedPacketpk)
     
     def handle(self, data, address):
         id = data[0]
