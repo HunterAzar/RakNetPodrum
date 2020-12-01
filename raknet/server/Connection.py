@@ -31,6 +31,7 @@ class Connection:
     sendSequenceNumber = 0
     reliableFrameIndex = 0
     fragmentId = 0
+    handler = None
     
     def __init__(self, address, mtuSize):
         self.address = address
@@ -39,6 +40,7 @@ class Connection:
         self.channelIndex = [0]*32
         self.lastUpdateTime = time()
         self.sendQueue = DataPacket()
+        self.handler = Handler()
         
     def update(self, timestamp):
         if not self.isActive and self.lastUpdate + 10000 < timestamp:
@@ -86,11 +88,11 @@ class Connection:
         if (header & GeneralVariables.bitFlags["Valid"]) == 0:
             return
         elif header & GeneralVariables.bitFlags["Ack"]:
-            return Handler.handleAck(data, self.address)
+            return self.handler.handleAck(data, self.address)
         elif header & GeneralVariables.bitFlags["Nack"]:
-            return Handler.handleNack(data, self.address)
+            return self.handler.handleNack(data, self.address)
         else:
-            return Handler.handleDataPacket(data, self.address)
+            return self.handler.handleDataPacket(data, self.address)
         
     def receivePacket(self, packet):
         if packet.reliableFrameIndex == None:
@@ -102,7 +104,7 @@ class Connection:
                 self.lastReliableIndex += 1
                 self.reliableWindowStart += 1
                 self.reliableWindowEnd += 1
-                Handler.handleEncapsulatedPacket(packet, self.address)
+                self.handler.handleEncapsulatedPacket(packet, self.address)
                 if len(self.reliableWindow) > 0:
                     windows = deepcopy(self.reliableWindow)
                     reliableWindow = {}
@@ -116,7 +118,7 @@ class Connection:
                         self.lastReliableIndex += 1
                         self.reliableWindowStart += 1
                         self.reliableWindowEnd += 1
-                        Handler.handleEncapsulatedPacket(packet, self.address)
+                        self.handler.handleEncapsulatedPacket(packet, self.address)
                         del self.reliableWindow[seqIndex]
             else:
                 self.reliableWindow[packet.reliableFrameIndex] = packet
