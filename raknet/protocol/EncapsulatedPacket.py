@@ -57,8 +57,8 @@ class EncapsulatedPacket(Packet):
         
     def getTotalLength(self):
         value = 3
-        value += 3 if self.reliableFrameIndex != None else 0
-        value += 4 if self.orderedFrameIndex != None else 0
+        value += 3 if self.reliableFrameIndex is not None else 0
+        value += 4 if self.orderedFrameIndex is not None else 0
         value += 10 if self.isFragmented else 0
         value += len(self.body)
         return value
@@ -67,44 +67,40 @@ class EncapsulatedPacket(Packet):
     def isReliable(reliability):
         if reliability == GeneralVariables.reliability["Unreliable"]:
             return True
-        elif reliability == GeneralVariables.reliability["ReliableSequenced"]:
+        if reliability == GeneralVariables.reliability["ReliableSequenced"]:
             return True
-        elif reliability == GeneralVariables.reliability["ReliableOrdered"]:
+        if reliability == GeneralVariables.reliability["ReliableOrdered"]:
             return True
-        elif reliability == GeneralVariables.reliability["ReliableWithAckReceipt"]:
+        if reliability == GeneralVariables.reliability["ReliableWithAckReceipt"]:
             return True
-        elif reliability == GeneralVariables.reliability["ReliableOrderedWithAckReceipt"]:
+        if reliability == GeneralVariables.reliability["ReliableOrderedWithAckReceipt"]:
             return True
-        else:
-            return False
+        return False
             
     @staticmethod
     def isSequenced(reliability):
         if reliability == GeneralVariables.reliability["UnreliableSequenced"]:
             return True
-        elif reliability == GeneralVariables.reliability["ReliableSequenced"]:
+        if reliability == GeneralVariables.reliability["ReliableSequenced"]:
             return True
-        else:
-            return False
+        return False
             
     @staticmethod
     def isOrdered(reliability):
         if reliability == GeneralVariables.reliability["ReliableOrdered"]:
             return True
-        elif reliability == GeneralVariables.reliability["ReliableOrderedWithAckReceipt"]:
+        if reliability == GeneralVariables.reliability["ReliableOrderedWithAckReceipt"]:
             return True
-        else:
-            return False
+        return False
             
     @staticmethod
     def isSequencedOrOrdered(reliability):
         if reliability == GeneralVariables.reliability["UnreliableSequenced"]:
             return True
-        elif reliability == GeneralVariables.reliability["ReliableOrdered"]:
+        if reliability == GeneralVariables.reliability["ReliableOrdered"]:
             return True
-        elif reliability == GeneralVariables.reliability["ReliableSequenced"]:
+        if reliability == GeneralVariables.reliability["ReliableSequenced"]:
             return True
-        elif reliability == GeneralVariables.reliability["ReliableOrderedWithAckReceipt"]:
+        if reliability == GeneralVariables.reliability["ReliableOrderedWithAckReceipt"]:
             return True
-        else:
-            return False
+        return False
