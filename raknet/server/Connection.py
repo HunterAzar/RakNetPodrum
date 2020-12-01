@@ -12,7 +12,7 @@ class Connection:
     mtuSize = None
     status = None
     channelIndex = None
-    isAcive = False
+    isActive = False
     lastUpdateTime = None
     ackQueue = []
     nackQueue = []
