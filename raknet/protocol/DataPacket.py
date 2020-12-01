@@ -18,6 +18,8 @@ class DataPacket(Packet):
         while not self.feof():
             packet = EncapsulatedPacket()
             packet.buffer = self.buffer[self.offset:]
+            if len(packet.buffer) == 0:
+                break
             packet.decode()
             self.packets.append(packet)
             self.offset += packet.getTotalLength()
