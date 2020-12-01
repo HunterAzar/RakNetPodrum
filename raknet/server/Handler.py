@@ -206,6 +206,7 @@ class Handler:
         if GeneralVariables.server.getConnection():
             connection = GeneralVariables.server.getConnection(address)
             connection.receive(data)
+            connection.update(time())
         elif id == GeneralVariables.packetIds["UnconnectedPing"]:
             newPacket = self.handleUnconnectedPing(data)
             GeneralVariables.server.sendPacket(newPacket, address[0], address[1])
