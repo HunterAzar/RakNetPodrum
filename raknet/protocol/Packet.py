@@ -46,7 +46,7 @@ class Packet(BinaryStream):
             ])
             port = self.getShort()
             return InternetAddress(ip, port, version)
-        elif version == 6:
+        if version == 6:
             self.getLShort()
             port = self.getShort()
             self.getInt()
