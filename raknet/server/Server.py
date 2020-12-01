@@ -50,7 +50,7 @@ class Server(Thread):
     def sendPacket(self, packet, ip, port):
         packet.encode()
         if GeneralVariables.options["debug"]:
-            print(GeneralVariables.packetNames[packet.buffer[0]])
+            print("Server to Client: " + hex(packet.buffer[0]))
         self.socket.sendto(packet.buffer, (ip, port))
         
     def tick(self):
