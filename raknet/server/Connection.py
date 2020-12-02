@@ -118,7 +118,7 @@ class Connection:
                         self.reliableWindowStart += 1
                         self.reliableWindowEnd += 1
                         self.handler.handleEncapsulatedPacket(encapsulatedPacket, self.address)
-                        del self.reliableWindow[seqIndex]
+                        del self.reliableWindow[sequenceIndex]
             else:
                 self.reliableWindow[packet.reliableFrameIndex] = packet
                 
