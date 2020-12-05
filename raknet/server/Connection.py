@@ -157,7 +157,7 @@ class Connection:
                 fragmentIndex += 1
                 oldIndex = index
                 index += self.mtuSize
-                buffer.insert(1, packet.buffer[oldIndex:index - 60])
+                buffer.insert(1, packet.body[oldIndex:index - 60])
                 buffers.append(buffer)
             self.fragmentId += 1
             fragmentId = self.fragmentId % 65536
