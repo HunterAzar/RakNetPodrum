@@ -13,7 +13,6 @@ class Packet(BinaryStream):
         pass
 
     def decode(self):
-        self.offset = 0
         self.decodeHeader()
         self.decodePayload()
 
@@ -24,7 +23,6 @@ class Packet(BinaryStream):
         pass
 
     def encode(self):
-        self.reset()
         self.encodeHeader()
         self.encodePayload()
 
