@@ -16,20 +16,15 @@ class DataPacket(Packet):
     def decodePayload(self):
         self.sequenceNumber = self.getLTriad()
         while not self.feof():
-            data = self.buffer[self.offset:]
-            if data == b"":
-                break
             packet = EncapsulatedPacket()
-            packet.buffer = data
+            packet.buffer = self.buffer
+            packet.offset = self.offset
             packet.decode()
+            self.offset = packet.offset
             self.packets.append(packet)
-            self.offset += packet.getTotalLength()
 
     def getTotalLength(self):
         length = 4
         for packet in self.packets:
-            if isinstance(packet, EncapsulatedPacket):
-                length += packet.getTotalLength()
-            elif isinstance(packet, bytes):
-                length += len(packet)
+            length += packet.getTotalLength()
         return length
